@@ -1,30 +1,32 @@
-import { MessageEntity } from "src/messages/messages.entity";
-import { QuizEntity } from "src/quiz/Quiz.entity";
-import { UsersEntity } from "src/users/user.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("admintable")
-
-export class AdminEntity{
+export class AdminEntity {
     @PrimaryGeneratedColumn()
+    // Colonne pour la clé primaire générée automatiquement
     id: number;
-    @Column()
-    username: string;
-    @Column()
-    password: string;
-    @Column()
-    role: string;
-    @Column()
-    email: string;
-    @Column()
-    firstname: string;
-    @Column()
-    lastname: string;
-    @OneToMany(()=>MessageEntity, message=>message.admin)
-    messages:MessageEntity[]
-    @OneToMany(()=>UsersEntity, user=>user.admin)
-    users:UsersEntity[]
-    @OneToMany(() => QuizEntity, quiz => quiz.admin)
-    quiz: QuizEntity[]
 
+    @Column()
+    // Colonne pour stocker le nom d'utilisateur
+    username: string;
+
+    @Column()
+    // Colonne pour stocker le mot de passe
+    password: string;
+
+    @Column()
+    // Colonne pour stocker le rôle de l'administrateur
+    role: string;
+
+    @Column()
+    // Colonne pour stocker l'email
+    email: string;
+
+    @Column()
+    // Colonne pour stocker le prénom
+    firstname: string;
+
+    @Column()
+    // Colonne pour stocker le nom de famille
+    lastname: string;
 }

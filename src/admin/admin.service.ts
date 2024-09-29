@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { AdminEntity } from "./admin.entity";
@@ -74,4 +74,28 @@ async getmeasadmin(id:number){
   }
   return user
 }
+    async updateProfile(updateProfileDto: any) {
+      const user = await this.adminRepository.findOne({where : {id : updateProfileDto.id}});
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      // Update fields only if they are provided in the DTO
+      if (updateProfileDto.firstName) {
+        user.firstname = updateProfileDto.firstName;
+      }
+      if (updateProfileDto.lastName) {
+        user.lastname = updateProfileDto.lastName;
+      }
+      if (updateProfileDto.email) {
+        user.email = updateProfileDto.email;
+      }
+    
+
+      // Save the updated user data
+      return await this.adminRepository.save(user);
+
+     
+      
+    }
 } 

@@ -1,13 +1,16 @@
-import { IsEmail, IsString } from "class-validator";
+import { IsString } from "class-validator";
 
-export class CreateMessageDto{
-    @IsEmail()
+export class CreateMessageDto {
+    
     @IsString()
-    email:string
+    // Valide si le champ 'senderName' est une chaîne de caractères
+    senderName: string;
+    
     @IsString()
-    telephone : string;
+    // Valide si le champ 'email' est une chaîne de caractères
+    email: string;
+    
     @IsString()
-    message:string;
-    @IsString()
-    nom: string;
+    // Valide si le champ 'messageBody' est une chaîne de caractères
+    messageBody: string;
 }

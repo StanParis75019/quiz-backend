@@ -1,50 +1,51 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { MessageEntity } from "./messages.entity";
-import { CreateMessageDto } from "./Dto/CreateMessage.dto";
+// src/message/message.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateMessageDto } from './Dto/CreateMessage.dto';
+import { Message } from './messages.entity';
 
 @Injectable()
-export class MessageService{
-    constructor(
-        @InjectRepository(MessageEntity) 
-        private readonly messagerepo:Repository<MessageEntity>
-    ){} 
-    async createMessage(data:CreateMessageDto)
-    {
-        const newMessage = this.messagerepo.create({
-            email: data.email,
-            nom: data.nom,
-            telephone: data.telephone,
-            message: data.message
+export class MessageService {
+  constructor(
+    @InjectRepository(Message)
+    // Injection du repository de l'entité 'Message' pour interagir avec la base de données
+    private readonly messageRepository: Repository<Message>,
+  ) {}
 
-        })
-        if (! newMessage){
-            throw new HttpException("Le message n'a pas été créé", HttpStatus.CONFLICT)
-        }
-        return await this.messagerepo.save(newMessage)
+  // Méthode pour récupérer tous les messages
+  async findAll(): Promise<Message[]> {
+    return this.messageRepository.find();
+  }
 
-    }
-async GetAllMessage(){
-    const data = await this.messagerepo.find();
-    if (!data){
-        throw new HttpException("Pas de message jusqu'à maintenant", HttpStatus.NOT_FOUND)
-    }
-    return data 
-}
-async DeleteMessage(id:number){
-    const isMessageFound = await this.messagerepo.findOne({where: {id}})
-    if (! isMessageFound){
-        throw new HttpException("Aucun message avec cet id", HttpStatus.NOT_FOUND)
-
-    }
-    return await this.messagerepo.delete(isMessageFound)
-}
-async GetmessageById(id: number){
-    const message = await this.messagerepo.findOne({where:{id}})
-    if (!message){
-        throw new HttpException("Aucun message avec cet id", HttpStatus.NOT_FOUND)
+  // Méthode pour récupérer un message par son identifiant
+  async findOne(id: number): Promise<Message> {
+    const message = await this.messageRepository.findOne({ where: { id } });
+    if (!message) {
+      // Lance une exception si le message n'est pas trouvé
+      throw new NotFoundException('Message not found');
     }
     return message;
-}
+  }
+
+  // Méthode pour créer un nouveau message
+  async create(createMessageDto: CreateMessageDto): Promise<Message> {
+    const { senderName, email, messageBody } = createMessageDto;
+
+    // Crée une nouvelle instance de 'Message' avec les données du DTO
+    const message = this.messageRepository.create({
+      senderName,
+      email,
+      messageBody,
+    });
+
+    // Enregistre le message dans la base de données
+    return this.messageRepository.save(message);
+  }
+
+  // Méthode pour supprimer un message par son identifiant
+  async remove(id: number): Promise<void> {
+    const message = await this.findOne(id); // Récupère le message à supprimer
+    await this.messageRepository.remove(message); // Supprime le message de la base de données
+  }
 }

@@ -1,11 +1,16 @@
-import { IsString } from "class-validator";
+// src/quiz/dto/create-quiz.dto.ts
+import { IsBoolean, IsString } from 'class-validator';
 
-export class Createquizdto{
-    @IsString()
-    Question : string;
-    @IsString()
-    Reponse : string;
-    @IsString()
-    Categorie : string;
-    
+export class CreateQuizDto {
+  @IsString()
+  // Valide si le champ 'question' est une chaîne de caractères
+  question: string;
+
+  @IsBoolean()
+  // Valide si le champ 'response' est un booléen
+  response: boolean;
+
+  @IsString()
+  // Valide si le champ 'category' est une chaîne de caractères
+  category: string;
 }

@@ -1,47 +1,52 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { QuizEntity } from "./Quiz.entity";
-import { Repository } from "typeorm";
-import { Createquizdto } from "./Dto/createquiz.dto";
-import { Updatequizdto } from "./Dto/updatequiz.dto";
+// src/quiz/quiz.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Quiz } from './Quiz.entity';
+import { CreateQuizDto } from './Dto/createquiz.dto';
 
 @Injectable()
-export class QuizService{
-    constructor(
-        @InjectRepository(QuizEntity)
-        private readonly quizrepository : Repository<QuizEntity>
+export class QuizService {
+  constructor(
+    @InjectRepository(Quiz)
+    // Injection du repository de l'entité 'Quiz' pour interagir avec la base de données
+    private readonly quizRepository: Repository<Quiz>,
+  ) {}
 
-    ){}
-    async createquiz(data: Createquizdto){
-        const NewQuiz = this.quizrepository.create({
-            Question : data.Question,
-            Reponse : data.Reponse,
-            Categorie : data.Categorie,
+  // Méthode pour créer un nouveau quiz
+  async createQuiz(createQuizDto: CreateQuizDto): Promise<Quiz> {
+    const quiz = this.quizRepository.create(createQuizDto);
+    return await this.quizRepository.save(quiz);
+  }
 
-        })
-        return await this.quizrepository.save(NewQuiz);
+  // Méthode pour récupérer tous les quiz
+  async getAllQuizzes(): Promise<Quiz[]> {
+    return await this.quizRepository.find();
+  }
+
+  // Méthode pour récupérer un quiz par son identifiant
+  async getQuizById(id: number): Promise<Quiz> {
+    const quiz = await this.quizRepository.findOne({ where: { id } });
+    if (!quiz) {
+      // Lance une exception si le quiz n'est pas trouvé
+      throw new NotFoundException(`Quiz with ID ${id} not found`);
     }
-    async GetAllQuiz (){
-        const data = await this.quizrepository.find({})
-        if ( ! data){
-            throw new HttpException('Aucune donnée', HttpStatus.NOT_FOUND)
-        }
-        return data
+    return quiz;
+  }
+
+  // Méthode pour mettre à jour un quiz existant
+  async updateQuiz(id: number, updateQuizDto: CreateQuizDto): Promise<Quiz> {
+    const quiz = await this.getQuizById(id); // Récupère le quiz à mettre à jour
+    Object.assign(quiz, updateQuizDto); // Met à jour le quiz avec les nouvelles données
+    return await this.quizRepository.save(quiz);
+  }
+
+  // Méthode pour supprimer un quiz par son identifiant
+  async deleteQuiz(id: number): Promise<void> {
+    const result = await this.quizRepository.delete(id);
+    if (result.affected === 0) {
+      // Lance une exception si le quiz à supprimer n'est pas trouvé
+      throw new NotFoundException(`Quiz with ID ${id} not found`);
     }
-    async DeleteQuiz(id: number){
-        const isfound = await this.quizrepository.findOne({where:{id}})
-        if ( ! isfound){ throw new HttpException("Aucun qui n'a été trouvé par cet id", HttpStatus.NOT_FOUND)}
-        return await this.quizrepository.delete(isfound);
-    }
-    async UpdateQuiz(id : number, data : Updatequizdto){
-        const isfound = await this.quizrepository.findOne({where:{id}})
-        if ( ! isfound){ throw new HttpException("Aucun qui n'a été trouvé par cet id", HttpStatus.NOT_FOUND)}
-        Object.assign(isfound, data)
-        return await this.quizrepository.save(isfound)
-    }
-    async GetQuizbyId(id: number){
-        const isfound = await this.quizrepository.findOne({where:{id}})
-        if ( ! isfound){ throw new HttpException("Aucun qui n'a été trouvé par cet id", HttpStatus.NOT_FOUND)}
-        return isfound;
-    }
+  }
 }

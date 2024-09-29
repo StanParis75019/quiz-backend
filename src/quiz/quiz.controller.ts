@@ -1,31 +1,40 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { QuizService } from "./quiz.service";
-import { Createquizdto } from "./Dto/createquiz.dto";
-import { Updatequizdto } from "./Dto/updatequiz.dto";
+// src/quiz/quiz.controller.ts
+import { Controller, Post, Get, Param, Body, Put, Delete } from '@nestjs/common';
+import { QuizService } from './quiz.service';
+import { CreateQuizDto } from './Dto/createquiz.dto';
+import { Quiz } from './Quiz.entity';
 
-@Controller("quiz")
-export class QuizController{
-    constructor(
-        private readonly quizservice: QuizService
-    ){}
-    @Post('/create')
-    async CreateQuiz (@Body() data: Createquizdto){
-        return await this.quizservice.createquiz(data)
-    }
-    @Get("/getallquiz")
-    async GetAllData(){
-        return await this.quizservice.GetAllQuiz()
-    }
-    @Delete ('/delete/:id')
-    async DeleteQuiz(@Param("id") id:number){
-        return await this.quizservice.DeleteQuiz(id)
-    }
-    @Put ('/updatequiz/:id')
-    async UpdateQuiz(@Param('id') id: number, @Body() data:Updatequizdto ){
-        return await this.quizservice.UpdateQuiz(id, data)
-    }
-    @Get ("/getquizbyid/:id")
-    async GetQuizbyId ( @Param('id') id: number){
-        return await this.quizservice.GetQuizbyId(id)
-    }
+@Controller('quizzes')
+export class QuizController {
+  constructor(private readonly quizService: QuizService) {}
+
+  @Post()
+  // Route pour créer un nouveau quiz
+  async createQuiz(@Body() createQuizDto: CreateQuizDto): Promise<Quiz> {
+    return await this.quizService.createQuiz(createQuizDto);
+  }
+
+  @Get()
+  // Route pour récupérer tous les quiz
+  async getAllQuizzes(): Promise<Quiz[]> {
+    return await this.quizService.getAllQuizzes();
+  }
+
+  @Get(':id')
+  // Route pour récupérer un quiz spécifique par son identifiant
+  async getQuizById(@Param('id') id: number): Promise<Quiz> {
+    return await this.quizService.getQuizById(id);
+  }
+
+  @Put(':id')
+  // Route pour mettre à jour un quiz existant
+  async updateQuiz(@Param('id') id: number, @Body() updateQuizDto: CreateQuizDto): Promise<Quiz> {
+    return await this.quizService.updateQuiz(id, updateQuizDto);
+  }
+
+  @Delete(':id')
+  // Route pour supprimer un quiz par son identifiant
+  async deleteQuiz(@Param('id') id: number): Promise<void> {
+    return await this.quizService.deleteQuiz(id);
+  }
 }

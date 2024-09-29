@@ -1,16 +1,21 @@
-import { AdminEntity } from "src/admin/admin.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+// src/quiz/quiz.entity.ts
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity()
-export class QuizEntity{
-    @PrimaryGeneratedColumn()
-    id : number;
-    @Column()
-    Question : string;
-    @Column()
-    Reponse : string;
-    @Column()
-    Categorie : string;
-    @ManyToOne(() => AdminEntity, (admin) => admin.quiz)
-    admin:AdminEntity
+@Entity('quizzes')
+export class Quiz {
+  @PrimaryGeneratedColumn()
+  // Colonne pour la clé primaire générée automatiquement
+  id: number;
+
+  @Column()
+  // Colonne pour stocker la question du quiz
+  question: string;
+
+  @Column({ default: false })
+  // Colonne pour stocker la réponse (booléenne) du quiz, avec une valeur par défaut à 'false'
+  response: boolean;
+
+  @Column()
+  // Colonne pour stocker la catégorie du quiz
+  category: string;
 }

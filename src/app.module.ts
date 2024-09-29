@@ -4,24 +4,29 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminModule } from './admin/admin.module';
 import { AdminEntity } from './admin/admin.entity';
-import { MessageEntity } from './messages/messages.entity';
+
 import { MessageModule } from './messages/messages.module';
 import { UsersModule } from './users/user.module';
-import { UsersEntity } from './users/user.entity';
+
 import { Adminmiddleware } from './admin/Middleware/Admin.middleware';
 import { QuizModule } from './quiz/quiz.module';
-import { QuizEntity } from './quiz/Quiz.entity';
+import { Message } from './messages/messages.entity';
+import { User } from './users/user.entity';
+import { Quiz } from './quiz/Quiz.entity';
+import { NewsletterModule } from './newsletter/newsletter.module';
+import { NewsletterEntity } from './newsletter/newsletter.entity';
+
 
 
 @Module({
-  imports: [AdminModule, QuizModule, MessageModule, UsersModule, TypeOrmModule.forRoot({
+  imports: [AdminModule, QuizModule, MessageModule, UsersModule,NewsletterModule, TypeOrmModule.forRoot({
     type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: '',
-    database: 'quizdatabase',
-    entities: [AdminEntity, MessageEntity, UsersEntity, QuizEntity],
+    host: 'mysql-1a1e680b-himstanley-0e61.i.aivencloud.com',
+    port: 23187,
+    username: 'avnadmin',
+    password: 'AVNS_nPnBcjCaSIp6i1aV9fe',
+    database: 'defaultdb',
+    entities: [AdminEntity, Message, User, Quiz, NewsletterEntity],
     synchronize: true,
   })],
   controllers: [AppController],
@@ -32,6 +37,6 @@ export class AppModule {
     consumer.apply(Adminmiddleware).forRoutes({
       path: '*',
       method:RequestMethod.ALL
-    })
-  }
+    })
+  }
 }
