@@ -16,6 +16,7 @@ import { Quiz } from './quiz/Quiz.entity';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { NewsletterEntity } from './newsletter/newsletter.entity';
 import { CategoryModule } from './categorie/catoegory.module';
+import { Category } from './categorie/categorie.entity';
 
 
 
@@ -28,7 +29,7 @@ import { CategoryModule } from './categorie/catoegory.module';
     username: 'avnadmin',
     password: 'AVNS_nPnBcjCaSIp6i1aV9fe',
     database: 'defaultdb',
-    entities: [AdminEntity, Message, User, Quiz, NewsletterEntity],
+    entities: [AdminEntity, Message, User, Quiz,Category, NewsletterEntity],
     synchronize: true,
   })],
   controllers: [AppController],
