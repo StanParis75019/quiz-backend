@@ -15,11 +15,13 @@ import { User } from './users/user.entity';
 import { Quiz } from './quiz/Quiz.entity';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { NewsletterEntity } from './newsletter/newsletter.entity';
+import { CategoryModule } from './categorie/catoegory.module';
+
 
 
 
 @Module({
-  imports: [AdminModule, QuizModule, MessageModule, UsersModule,NewsletterModule, TypeOrmModule.forRoot({
+  imports: [AdminModule, QuizModule, MessageModule, UsersModule,NewsletterModule, CategoryModule, TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'mysql-1a1e680b-himstanley-0e61.i.aivencloud.com',
     port: 23187,
