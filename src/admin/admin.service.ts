@@ -5,6 +5,7 @@ import { AdminEntity } from "./admin.entity";
 import { compare, hash} from "bcryptjs"
 import { RegisterDto } from "./dto/createadmin.dto";
 import { sign } from "jsonwebtoken";
+import { UpdateAdminProfileDto } from "./dto/UpdateAdminProfile.dto";
 
 
 @Injectable()
@@ -74,28 +75,42 @@ async getmeasadmin(id:number){
   }
   return user
 }
-    async updateProfile(updateProfileDto: any) {
-      const user = await this.adminRepository.findOne({where : {id : updateProfileDto.id}});
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
+async updateProfile(updateProfileDto: any): Promise<AdminEntity> {
+  const user = await this.adminRepository.findOne({ where: { id: updateProfileDto.id } });
+  
+  if (!user) {
+    throw new NotFoundException('Admin not found');
+  }
 
-      // Update fields only if they are provided in the DTO
-      if (updateProfileDto.firstName) {
-        user.firstname = updateProfileDto.firstName;
-      }
-      if (updateProfileDto.lastName) {
-        user.lastname = updateProfileDto.lastName;
-      }
-      if (updateProfileDto.email) {
-        user.email = updateProfileDto.email;
-      }
-    
+  // Update fields only if they are provided
+  if (updateProfileDto.firstName) {
+    user.firstname = updateProfileDto.firstName;
+  }
+  if (updateProfileDto.lastName) {
+    user.lastname = updateProfileDto.lastName;
+  }
+  if (updateProfileDto.email) {
+    user.email = updateProfileDto.email;
+  }
 
-      // Save the updated user data
-      return await this.adminRepository.save(user);
-
-     
-      
+  // Handle password update if provided and valid
+  if (updateProfileDto.password) {
+    const isPasswordValid = this.validatePassword(updateProfileDto.password);
+    if (!isPasswordValid) {
+      throw new HttpException('Password must contain 8 characters, including 1 uppercase letter, 1 number, and 1 special character.', HttpStatus.BAD_REQUEST);
     }
+    user.password = await hash(updateProfileDto.password, 10);
+  }
+
+  return await this.adminRepository.save(user);
+}
+
+// Password validation logic
+private validatePassword(password: string): boolean {
+  const minLength = password.length >= 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  return minLength && hasUppercase && hasNumber && hasSpecialChar;
+}
 } 

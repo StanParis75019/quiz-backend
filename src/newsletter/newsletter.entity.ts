@@ -4,6 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export class NewsletterEntity{
     @PrimaryGeneratedColumn()
     id:number;
+    
     @Column()
     email:string;
 }

@@ -1,21 +1,22 @@
 // src/quiz/quiz.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+import { User } from 'src/users/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 
 @Entity('quizzes')
 export class Quiz {
   @PrimaryGeneratedColumn()
-  // Colonne pour la clé primaire générée automatiquement
   id: number;
 
   @Column()
-  // Colonne pour stocker la question du quiz
   question: string;
 
-  @Column({ default: false })
-  // Colonne pour stocker la réponse (booléenne) du quiz, avec une valeur par défaut à 'false'
-  response: boolean;
+  @Column()
+  response: string;
 
   @Column()
-  // Colonne pour stocker la catégorie du quiz
   category: string;
+
+  @ManyToMany(() => User, (user) => user.quizzes, { cascade: ['remove'] }) // Enable cascade delete
+  users: User[]; // Inverse relationship with User
 }

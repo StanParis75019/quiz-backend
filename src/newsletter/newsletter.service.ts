@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import { Injectable, HttpException, HttpStatus, Body } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { NewsletterEntity } from "./newsletter.entity";
 import { Repository } from "typeorm";
@@ -8,12 +8,14 @@ import { Repository } from "typeorm";
 
 export class NewsLetterService {
     constructor (@InjectRepository(NewsletterEntity)private readonly newsletterrepo:Repository<NewsletterEntity>){}
-    async createNewsletter(email:string){
-        const newsletter = this.newsletterrepo.create({email})
+    async createNewsletter( email:any){
+        const newsletter =  this.newsletterrepo.create({
+            email : email.email
+        })
         return await this.newsletterrepo.save(newsletter)
     } 
     async getAllNewsletters(){
-        return await this.newsletterrepo.find()
+        return await this.newsletterrepo.find({})
     }
     async deletenewsletterbyid(newsletterid:number){
         const newsletter=await this.newsletterrepo.findOne({where:{id:newsletterid}})

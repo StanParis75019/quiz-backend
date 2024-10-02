@@ -5,10 +5,11 @@ import { Quiz } from './Quiz.entity';
 import { Category } from 'src/categorie/categorie.entity';
 import { QuizService } from './quiz.service';
 import { QuizController } from './quiz.controller';
+import { User } from 'src/users/user.entity';
 
 @Module({
   // Importe le module TypeOrmModule avec les entités Quiz et Category pour permettre les opérations sur la base de données
-  imports: [TypeOrmModule.forFeature([Quiz, Category])],
+  imports: [TypeOrmModule.forFeature([Quiz, Category,User])],
   
   // Spécifie le service 'QuizService' comme fournisseur dans ce module
   providers: [QuizService],

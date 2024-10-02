@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { Adminservice } from "./admin.service";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/createadmin.dto";
+import { UpdateAdminProfileDto } from "./dto/UpdateAdminProfile.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -31,9 +32,10 @@ export class AuthController {
         return await this.authservice.deleteadmin(id);
     }
 
-    @Put('updateProfile')
-    // Route pour mettre à jour le profil d'un administrateur
-    async updateProfile(@Body() updateProfileDto: any) {
-        return this.authservice.updateProfile(updateProfileDto);
-    }
+   
+  @Put('update/:id')
+  // Route to update admin profile
+  async updateProfile(@Body() updateProfileDto: UpdateAdminProfileDto) {
+    return this.authservice.updateProfile(updateProfileDto);
+  }
 }

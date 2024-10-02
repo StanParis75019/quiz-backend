@@ -6,9 +6,9 @@ export class CreateQuizDto {
   // Valide si le champ 'question' est une chaîne de caractères
   question: string;
 
-  @IsBoolean()
+  @IsString()
   // Valide si le champ 'response' est un booléen
-  response: boolean;
+  response: string;
 
   @IsString()
   // Valide si le champ 'category' est une chaîne de caractères
